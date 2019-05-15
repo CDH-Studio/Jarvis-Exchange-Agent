@@ -333,6 +333,12 @@ namespace JarvisExchangeAgent
                         } catch (Exception e)
                         {
                             Console.WriteLine(e);
+                            return new HttpResponse()
+                            {
+                                ContentAsUTF8 = "error",
+                                ReasonPhrase = "Error",
+                                StatusCode = "300"
+                            };
                         }
                     }
                 },
