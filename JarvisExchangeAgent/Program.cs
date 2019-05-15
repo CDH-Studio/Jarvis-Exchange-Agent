@@ -295,39 +295,44 @@ namespace JarvisExchangeAgent
                     UrlRegex = @"^/avail$",
                     Method = "POST",
                     Callable = (HttpRequest req) => {
-                        JarvisRequest booking = JsonConvert.DeserializeObject<JarvisRequest>(req.Content);
-                        DateTime start = DateTime.Parse(booking.start);
-                        DateTime end = DateTime.Parse(booking.end);
-                        string roomEmail = booking.room;
-                        int floor = booking.floor;
+                        try {
+                            JarvisRequest booking = JsonConvert.DeserializeObject<JarvisRequest>(req.Content);
+                            DateTime start = DateTime.Parse(booking.start);
+                            DateTime end = DateTime.Parse(booking.end);
+                            string roomEmail = booking.room;
+                            int floor = booking.floor;
 
-                        Console.WriteLine("booking room: " + booking.room);
-                        Console.WriteLine("booking start: " + booking.start);
-                        Console.WriteLine("booking end: " + booking.end);
-                        Console.WriteLine("booking floor: " + booking.floor);
+                            Console.WriteLine("booking room: " + booking.room);
+                            Console.WriteLine("booking start: " + booking.start);
+                            Console.WriteLine("booking end: " + booking.end);
+                            Console.WriteLine("booking floor: " + booking.floor);
 
-                        ExchangeService service = GetService(floor);
-                        //service.TraceEnabled = true;
-                        //service.TraceFlags = TraceFlags.All;
-                        FindItemsResults<Appointment> appointments = api.GetAppointments(service, roomEmail, start.AddSeconds(1), end);
-                        
-                        if (0 == appointments.TotalCount)
-                        {
-                            return new HttpResponse()
+                            ExchangeService service = GetService(floor);
+                            //service.TraceEnabled = true;
+                            //service.TraceFlags = TraceFlags.All;
+                            FindItemsResults<Appointment> appointments = api.GetAppointments(service, roomEmail, start.AddSeconds(1), end);
+
+                            if (0 == appointments.TotalCount)
                             {
-                                ContentAsUTF8 = "free",
-                                ReasonPhrase = "OK",
-                                StatusCode = "200"
-                            };
-                        }
-                        else
-                        {
-                            return new HttpResponse()
+                                return new HttpResponse()
+                                {
+                                    ContentAsUTF8 = "free",
+                                    ReasonPhrase = "OK",
+                                    StatusCode = "200"
+                                };
+                            }
+                            else
                             {
-                                ContentAsUTF8 = "busy",
-                                ReasonPhrase = "OK",
-                                StatusCode = "200"
-                            };
+                                return new HttpResponse()
+                                {
+                                    ContentAsUTF8 = "busy",
+                                    ReasonPhrase = "OK",
+                                    StatusCode = "200"
+                                };
+                            }
+                        } catch (Exception e)
+                        {
+                            Console.WriteLine(e);
                         }
                     }
                 },
