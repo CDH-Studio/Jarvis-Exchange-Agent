@@ -48,7 +48,7 @@ namespace JarvisExchangeAgent
 
         static void Main(string[] args)
         {
-            // SetUpServiceAccounts();
+            SetUpServiceAccounts();
             API api = new API();
 
             log4net.Config.XmlConfigurator.Configure();
@@ -67,6 +67,75 @@ namespace JarvisExchangeAgent
                             string subject = "Jarvis";
                             string body = "daily stand-up";
                             List<string> attendees = null;
+                        
+                            Recurrence recurrence = null;
+                            switch(booking.type)
+                            {
+                                case "W":
+                                    DayOfTheWeek[] daysOfWeek = new DayOfTheWeek[booking.daysOfWeek.Count];
+                                    int count = 0;
+                                    foreach (int day in booking.daysOfWeek)
+                                    {
+                                        daysOfWeek[count++] = (DayOfTheWeek)day;
+                                    }
+                                    recurrence = new Recurrence.WeeklyPattern(DateTime.Parse(booking.start),
+                                                                                booking.interval,
+                                                                                daysOfWeek);
+                                    if (!string.IsNullOrEmpty(booking.end))
+                                    {
+                                        recurrence.EndDate = DateTime.Parse(booking.end);
+                                    }
+                                    else
+                                    {
+                                        recurrence.NeverEnds();
+                                    }
+                                    break;
+                                case "M":
+                                    recurrence = new Recurrence.MonthlyPattern(DateTime.Parse(booking.start),
+                                                                                booking.interval,
+                                                                                booking.dayOfMonth);
+                                    if (!string.IsNullOrEmpty(booking.end))
+                                    {
+                                        recurrence.EndDate = DateTime.Parse(booking.end);
+                                    }
+                                    else
+                                    {
+                                        recurrence.NeverEnds();
+                                    }
+                                break;
+                                case "D":
+                                    recurrence = new Recurrence.DailyPattern(DateTime.Parse(booking.start),
+                                                                                booking.interval);
+                                    if (!string.IsNullOrEmpty(booking.end))
+                                    {
+                                        recurrence.EndDate = DateTime.Parse(booking.end);
+                                    }
+                                    else
+                                    {
+                                        recurrence.NeverEnds();
+                                    }
+                                    break;
+                                default:
+
+                                break;
+                            }
+                            
+
+                            ExchangeService service = GetService(3);
+
+                            FindItemsResults<Appointment> appointments = api.GetAppointments(service, roomEmail, start.AddSeconds(1), end);
+                            Console.WriteLine(appointments.TotalCount);
+
+                            if (0 == appointments.TotalCount) {
+                                api.CreateMeeting(service, roomEmail, subject, body, start, end, attendees, recurrence);
+
+                                return new HttpResponse()
+                                {
+                                    ContentAsUTF8 = "Hii",
+                                    ReasonPhrase = "OK",
+                                    StatusCode = "200"
+                                };
+                            }
 
                             return new HttpResponse()
                             {
@@ -88,6 +157,42 @@ namespace JarvisExchangeAgent
                     }
                 }, 
                 new Route {
+                    Name = "Send Mail",
+                    UrlRegex = @"^/send$",
+                    Method = "POST",
+                    Callable = (HttpRequest req) => {
+                        try {
+                            Console.WriteLine(req.Content);
+                            JarvisRequest booking = JsonConvert.DeserializeObject<JarvisRequest>(req.Content);
+
+                            string to = booking.to;
+                            string subject = booking.subject;
+                            string body = booking.body;
+
+                            ExchangeService service = GetService(0);
+                            api.sendMail(service, to, subject, body);
+                            Console.WriteLine("mail sent.");
+
+                            return new HttpResponse()
+                                {
+                                    ContentAsUTF8 = "Sent",
+                                    ReasonPhrase = "OK",
+                                    StatusCode = "200"
+                                };
+                        } catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                            return new HttpResponse()
+                                {
+                                    ContentAsUTF8 = "Error",
+                                    ReasonPhrase = "OK",
+                                    StatusCode = "300"
+                                };
+                        }
+
+                    }
+                },
+                new Route {
                     Name = "Test Post",
                     UrlRegex = @"^/booking$",
                     Method = "POST",
@@ -104,6 +209,37 @@ namespace JarvisExchangeAgent
                             int floor = booking.floor;
                             List<string> attendees = booking.attendees;
 
+                            // attendees.Add("yunwei.li@canada.ca");
+                            /*
+                            RecurrencePattern booking = booking.booking;
+
+                            Recurrence recurrence;
+
+                            if (booking != null)
+                            {
+                                switch(booking.type)
+                                {
+                                    case "weekly":
+                                        DayOfTheWeek[] daysOfWeek = new DayOfTheWeek[booking.daysOfWeek.Count];
+                                        int count = 0;
+                                        foreach (int day in booking.daysOfWeek)
+                                        {
+                                            daysOfWeek[count++] = (DayOfTheWeek)day;
+                                        }
+                                        recurrence = new Recurrence.WeeklyPattern(DateTime.Parse(booking.start),
+                                                                                  booking.interval,
+                                                                                  daysOfWeek);
+
+                                        break;
+                                    case "monthly":
+                                    break;
+                                    case "daily":
+                                    default:
+                                    break;
+                                }
+                            }
+                            */
+
                             Console.WriteLine("booking room: " + booking.room);
                             Console.WriteLine("booking start: " + booking.start);
                             Console.WriteLine("booking end: " + booking.end);
@@ -111,17 +247,17 @@ namespace JarvisExchangeAgent
                             Console.WriteLine("booking body: " + booking.body);
                             Console.WriteLine("booking floor: " + booking.floor);
 
-                            //ExchangeService service = GetService(floor);
+                            ExchangeService service = GetService(floor);
 
-                            //FindItemsResults<Appointment> appointments = api.GetAppointments(service, roomEmail, start.AddSeconds(1), end);
-                            //Console.WriteLine(appointments.TotalCount);
+                            FindItemsResults<Appointment> appointments = api.GetAppointments(service, roomEmail, start.AddSeconds(1), end);
+                            Console.WriteLine(appointments.TotalCount);
 
-                            if (0 == 0)
+                            if (0 == appointments.TotalCount)
                             {
-                                //ItemId newAppointment = api.CreateMeeting(service, roomEmail, subject, body, start, end, attendees, null);
+                                ItemId newAppointment = api.CreateMeeting(service, roomEmail, subject, body, start, end, attendees, null);
 
                                 JarvisResponse res = new JarvisResponse();
-                                res.eventId = DateTime.Now.ToString();
+                                res.eventId = newAppointment;
                                 string resJSON = JsonConvert.SerializeObject(res);
                                 return new HttpResponse()
                                 {
@@ -135,9 +271,9 @@ namespace JarvisExchangeAgent
                             {
                                 return new HttpResponse()
                                 {
-                                    ContentAsUTF8 = "conflict",
-                                    ReasonPhrase = "Conflict",
-                                    StatusCode = "444"
+                                    ContentAsUTF8 = "Boo",
+                                    ReasonPhrase = "OK",
+                                    StatusCode = "200"
                                 };
                             }
                         } catch (Exception e)
@@ -145,8 +281,8 @@ namespace JarvisExchangeAgent
                             Console.WriteLine(e);
                             return new HttpResponse()
                                 {
-                                    ContentAsUTF8 = "error",
-                                    ReasonPhrase = "Error",
+                                    ContentAsUTF8 = "Error",
+                                    ReasonPhrase = "OK",
                                     StatusCode = "300"
                                 };
                         }
@@ -200,6 +336,7 @@ namespace JarvisExchangeAgent
                     UrlRegex = @"^/cancel$",
                     Method = "POST",
                     Callable = (HttpRequest req) => {
+                        try{
                         JarvisRequest booking = JsonConvert.DeserializeObject<JarvisRequest>(req.Content);
                         string roomEmail = booking.room;
                         string eventId = booking.eventID;
@@ -210,36 +347,28 @@ namespace JarvisExchangeAgent
                         Console.WriteLine("booking floor: " + booking.floor);
 
                         ExchangeService service = GetService(floor);
+                        api.cancelMeeting(service, eventId);
                         //service.TraceEnabled = true;
                         //service.TraceFlags = TraceFlags.All;
                         return new HttpResponse()
                             {
-                                ContentAsUTF8 = "free",
+                                ContentAsUTF8 = "cancelled",
                                 ReasonPhrase = "OK",
                                 StatusCode = "200"
                             };
-                        /*
-                        if (0 == appointments.TotalCount)
+                        } catch (Exception e)
                         {
+                            Console.WriteLine(e);
                             return new HttpResponse()
                             {
-                                ContentAsUTF8 = "free",
-                                ReasonPhrase = "OK",
-                                StatusCode = "200"
+                                ContentAsUTF8 = "error",
+                                ReasonPhrase = "Error",
+                                StatusCode = "300"
                             };
                         }
-                        else
-                        {
-                            return new HttpResponse()
-                            {
-                                ContentAsUTF8 = "busy",
-                                ReasonPhrase = "OK",
-                                StatusCode = "200"
-                            };
-                        }
-                        */
                     }
-                },  new Route()
+                },
+                new Route()
                 {
                     Name = "Recur",
                     UrlRegex = @"^/recur$",
@@ -306,10 +435,52 @@ namespace JarvisExchangeAgent
                             };
                         }
                     }
+                },
+                new Route()
+                {
+                    Name = "Find Avail",
+                    UrlRegex = @"^/findAvail$",
+                    Method = "POST",
+                    Callable = (HttpRequest req) => {
+                        try {
+                            JarvisRequest booking = JsonConvert.DeserializeObject<JarvisRequest>(req.Content);
+                            string room = booking.room;
+                            int floor = booking.floor;
+                            int duration = booking.duration;
+                            DateTime start = DateTime.Parse(booking.start);
+                            DateTime end = DateTime.Parse(booking.end);
+
+                            Console.WriteLine("booking room: " + booking.room);
+                            Console.WriteLine("booking floor: " + booking.floor);
+                            Console.WriteLine("booking duration: " + booking.duration);
+                            Console.WriteLine("booking start: " + booking.start);
+                            Console.WriteLine("booking end: " + booking.end);
+
+                            ExchangeService service = GetService(floor);
+                            List<string> times = api.GetSuggestedMeetingTimes(service, room, duration, start, end);
+                            string timesJSON = JsonConvert.SerializeObject(times);
+                            Console.WriteLine("times: " + timesJSON);
+                            return new HttpResponse()
+                            {
+                                ContentAsUTF8 = timesJSON,
+                                ReasonPhrase = "OK",
+                                StatusCode = "200"
+                            };
+                        } catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                            return new HttpResponse()
+                            {
+                                ContentAsUTF8 = e.ToString(),
+                                ReasonPhrase = "Error",
+                                StatusCode = "200"
+                            };
+                        }
+                    }
                 }
             };
 
-            HttpServer httpServer = new HttpServer(3000, route_config);
+            HttpServer httpServer = new HttpServer(8080, route_config);
             
             Thread thread = new Thread(new ThreadStart(httpServer.Listen));
             thread.Start();
@@ -406,23 +577,28 @@ namespace JarvisExchangeAgent
 
 public class API
 {
-    /*
-    private static void GetUserFreeBusy(ExchangeService service, List<AttendeeInfo> attendees, 
-                                        int duration, TimeWindow timeWindow)
+    public void GetUserFreeBusy(ExchangeService service, //List<AttendeeInfo> attendees, 
+                                        int duration, DateTime start, DateTime end)
     {
+        // Create a list of attendees.
+        List<AttendeeInfo> attendees = new List<AttendeeInfo>();
+
+        attendees.Add(new AttendeeInfo()
+        {
+            SmtpAddress = "ic.conf-ott-235queen-399b-conf.ic@canada.ca",
+            AttendeeType = MeetingAttendeeType.Organizer
+        });
+
         // Specify availability options.
         AvailabilityOptions myOptions = new AvailabilityOptions();
-        myOptions.MeetingDuration = duration;
+        myOptions.MeetingDuration = 30;
         myOptions.RequestedFreeBusyView = FreeBusyViewType.FreeBusy;
 
         // Return a set of free/busy times.
         GetUserAvailabilityResults freeBusyResults = service.GetUserAvailability(attendees,
-                                                                                    timeWindow,
-                                                                                    AvailabilityData.FreeBusy,
-                                                                                    myOptions);
-
-        //XmlDocument xdoc = new XmlDocument();
-        //xdoc.LoadXml(free)
+                                                                             new TimeWindow(start, end),
+                                                                                 AvailabilityData.FreeBusy,
+                                                                                 myOptions);
 
         // Display available meeting times.
         Console.WriteLine("Availability for {0}", attendees[0].SmtpAddress);
@@ -442,35 +618,37 @@ public class API
         }
     }
 
-    private static void GetSuggestedMeetingTimes(ExchangeService service)
+    public List<string> GetSuggestedMeetingTimes(ExchangeService service, string room, int duration, 
+                                         DateTime start, DateTime end)
     {
         // Create a list of attendees.
         List<AttendeeInfo> attendees = new List<AttendeeInfo>();
 
         attendees.Add(new AttendeeInfo()
         {
-            SmtpAddress = "ic.conf-ott-235queen-169a-conf.ic@canada.ca",
+            SmtpAddress = room,
             AttendeeType = MeetingAttendeeType.Organizer
         });
 
         // Specify suggested meeting time options.
         AvailabilityOptions myOptions = new AvailabilityOptions();
-        myOptions.MeetingDuration = 90;
+        myOptions.MeetingDuration = duration;
         myOptions.MaximumNonWorkHoursSuggestionsPerDay = 0;
-        myOptions.GoodSuggestionThreshold = 49;
-        myOptions.MaximumSuggestionsPerDay = 48;
-        myOptions.MinimumSuggestionQuality = SuggestionQuality.Excellent;
-        myOptions.DetailedSuggestionsWindow = new TimeWindow(DateTime.Now, DateTime.Now.AddDays(2));
+        myOptions.GoodSuggestionThreshold = 10;
+        myOptions.MaximumSuggestionsPerDay = 40;
+        myOptions.MinimumSuggestionQuality = SuggestionQuality.Good;
+        myOptions.DetailedSuggestionsWindow = new TimeWindow(start, end);
 
         // Return a set of suggested meeting times.
         GetUserAvailabilityResults results = service.GetUserAvailability(attendees,
-                                                                        new TimeWindow(DateTime.Now.AddHours(16), DateTime.Now.AddDays(2)),
-                                                                            AvailabilityData.Suggestions,
-                                                                            myOptions);
+                                                                     new TimeWindow(start, end),
+                                                                         AvailabilityData.Suggestions,
+                                                                         myOptions);
         // Display available meeting times.
         Console.WriteLine("Availability for {0}", attendees[0].SmtpAddress);
         Console.WriteLine();
 
+        List<string> times = new List<string>();
         foreach (Suggestion suggestion in results.Suggestions)
         {
             Console.WriteLine(suggestion.Date);
@@ -478,11 +656,14 @@ public class API
             foreach (TimeSuggestion timeSuggestion in suggestion.TimeSuggestions)
             {
                 Console.WriteLine("Suggested meeting time:" + timeSuggestion.MeetingTime);
+                times.Add(timeSuggestion.MeetingTime.ToString("HH:mm"));
                 Console.WriteLine();
             }
         }
+
+        return times;
     }
-    */
+    
     public ItemId CreateMeeting(ExchangeService service, string room, string subject, string body, DateTime start, DateTime end)
     {
         return CreateMeeting(service, room, subject, body, start, end, new List<string>(), null);
@@ -501,11 +682,18 @@ public class API
         {
             foreach (string attendee in attendees)
             {
-                appointment.OptionalAttendees.Add(attendee);
+                appointment.RequiredAttendees.Add(attendee);
             }
         }
+        // appointment.RequiredAttendees.Add("yunwei.li@canada.ca");
         appointment.Save(new FolderId(WellKnownFolderName.Calendar, new Mailbox(room)), SendInvitationsMode.SendToAllAndSaveCopy);
         return appointment.Id;
+    }
+
+    public void cancelMeeting(ExchangeService service, string eventId)
+    {
+        Appointment appointment = Appointment.Bind(service, new ItemId(eventId));
+        appointment.CancelMeeting("The meeting has been cancelled by Jarvis.");
     }
 
     public FindItemsResults<Appointment> GetAppointments(ExchangeService service, string emailAddress,
@@ -519,6 +707,15 @@ public class API
         roomCalendarView.PropertySet = new PropertySet(AppointmentSchema.Start, AppointmentSchema.End); 
         return roomCalendar.FindAppointments(roomCalendarView);
     }
+
+    public void sendMail(ExchangeService service, string to, string subject, string body)
+    {
+        EmailMessage message = new EmailMessage(service);
+        message.Subject = subject;
+        message.Body = body;
+        message.ToRecipients.Add(to);
+        message.SendAndSaveCopy();
+    }
 }
 
 public class JarvisRequest
@@ -528,9 +725,11 @@ public class JarvisRequest
     public string end;
     public string subject = "Test Meeting";
     public string body = "Test Body";
+    public string to;
     public int floor;
     public string eventID;
     public List<string> attendees = null;
+    public int duration;
 }
 
 public class JarvisRecurrenceRequest
