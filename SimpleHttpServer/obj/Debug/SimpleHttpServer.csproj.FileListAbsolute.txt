@@ -1,0 +1,48 @@
+C:\Users\liy2\dev\SimpleHttpServer-master\SimpleHttpServer\bin\Debug\Resources\Pages\404.html
+C:\Users\liy2\dev\SimpleHttpServer-master\SimpleHttpServer\bin\Debug\Resources\Pages\500.html
+C:\Users\liy2\dev\SimpleHttpServer-master\SimpleHttpServer\bin\Debug\SimpleHttpServer.dll.config
+C:\Users\liy2\dev\SimpleHttpServer-master\SimpleHttpServer\bin\Debug\SimpleHttpServer.dll
+C:\Users\liy2\dev\SimpleHttpServer-master\SimpleHttpServer\bin\Debug\SimpleHttpServer.pdb
+C:\Users\liy2\dev\SimpleHttpServer-master\SimpleHttpServer\bin\Debug\log4net.dll
+C:\Users\liy2\dev\SimpleHttpServer-master\SimpleHttpServer\bin\Debug\log4net.xml
+C:\Users\liy2\dev\SimpleHttpServer-master\SimpleHttpServer\obj\Debug\SimpleHttpServer.csproj.CoreCompileInputs.cache
+C:\Users\liy2\dev\SimpleHttpServer-master\SimpleHttpServer\obj\Debug\SimpleHttpServer.csproj.CopyComplete
+C:\Users\liy2\dev\SimpleHttpServer-master\SimpleHttpServer\obj\Debug\SimpleHttpServer.dll
+C:\Users\liy2\dev\SimpleHttpServer-master\SimpleHttpServer\obj\Debug\SimpleHttpServer.pdb
+C:\Users\liy2\dev\SimpleHttpServer-master\SimpleHttpServer\obj\Debug\SimpleHttpServer.csprojAssemblyReference.cache
+C:\Users\liy2\dev\Test Server\SimpleHttpServer\bin\Debug\Resources\Pages\404.html
+C:\Users\liy2\dev\Test Server\SimpleHttpServer\bin\Debug\Resources\Pages\500.html
+C:\Users\liy2\dev\Test Server\SimpleHttpServer\bin\Debug\SimpleHttpServer.dll.config
+C:\Users\liy2\dev\Test Server\SimpleHttpServer\bin\Debug\SimpleHttpServer.dll
+C:\Users\liy2\dev\Test Server\SimpleHttpServer\bin\Debug\SimpleHttpServer.pdb
+C:\Users\liy2\dev\Test Server\SimpleHttpServer\bin\Debug\log4net.dll
+C:\Users\liy2\dev\Test Server\SimpleHttpServer\bin\Debug\log4net.xml
+C:\Users\liy2\dev\Test Server\SimpleHttpServer\obj\Debug\SimpleHttpServer.csprojAssemblyReference.cache
+C:\Users\liy2\dev\Test Server\SimpleHttpServer\obj\Debug\SimpleHttpServer.csproj.CoreCompileInputs.cache
+C:\Users\liy2\dev\Test Server\SimpleHttpServer\obj\Debug\SimpleHttpServer.csproj.CopyComplete
+C:\Users\liy2\dev\Test Server\SimpleHttpServer\obj\Debug\SimpleHttpServer.dll
+C:\Users\liy2\dev\Test Server\SimpleHttpServer\obj\Debug\SimpleHttpServer.pdb
+C:\Users\liy2\dev\JarvisExchangeAgent\SimpleHttpServer\bin\Debug\Resources\Pages\404.html
+C:\Users\liy2\dev\JarvisExchangeAgent\SimpleHttpServer\bin\Debug\Resources\Pages\500.html
+C:\Users\liy2\dev\JarvisExchangeAgent\SimpleHttpServer\bin\Debug\SimpleHttpServer.dll.config
+C:\Users\liy2\dev\JarvisExchangeAgent\SimpleHttpServer\bin\Debug\SimpleHttpServer.dll
+C:\Users\liy2\dev\JarvisExchangeAgent\SimpleHttpServer\bin\Debug\SimpleHttpServer.pdb
+C:\Users\liy2\dev\JarvisExchangeAgent\SimpleHttpServer\bin\Debug\log4net.dll
+C:\Users\liy2\dev\JarvisExchangeAgent\SimpleHttpServer\bin\Debug\log4net.xml
+C:\Users\liy2\dev\JarvisExchangeAgent\SimpleHttpServer\obj\Debug\SimpleHttpServer.csproj.CoreCompileInputs.cache
+C:\Users\liy2\dev\JarvisExchangeAgent\SimpleHttpServer\obj\Debug\SimpleHttpServer.csproj.CopyComplete
+C:\Users\liy2\dev\JarvisExchangeAgent\SimpleHttpServer\obj\Debug\SimpleHttpServer.dll
+C:\Users\liy2\dev\JarvisExchangeAgent\SimpleHttpServer\obj\Debug\SimpleHttpServer.pdb
+C:\Users\liy2\dev\JarvisExchangeAgent\SimpleHttpServer\obj\Debug\SimpleHttpServer.csprojAssemblyReference.cache
+D:\dev\Jarvis-Exchange-Agent\SimpleHttpServer\bin\Debug\Resources\Pages\404.html
+D:\dev\Jarvis-Exchange-Agent\SimpleHttpServer\bin\Debug\Resources\Pages\500.html
+D:\dev\Jarvis-Exchange-Agent\SimpleHttpServer\bin\Debug\SimpleHttpServer.dll.config
+D:\dev\Jarvis-Exchange-Agent\SimpleHttpServer\bin\Debug\SimpleHttpServer.dll
+D:\dev\Jarvis-Exchange-Agent\SimpleHttpServer\bin\Debug\SimpleHttpServer.pdb
+D:\dev\Jarvis-Exchange-Agent\SimpleHttpServer\bin\Debug\log4net.dll
+D:\dev\Jarvis-Exchange-Agent\SimpleHttpServer\bin\Debug\log4net.xml
+D:\dev\Jarvis-Exchange-Agent\SimpleHttpServer\obj\Debug\SimpleHttpServer.csprojAssemblyReference.cache
+D:\dev\Jarvis-Exchange-Agent\SimpleHttpServer\obj\Debug\SimpleHttpServer.csproj.CoreCompileInputs.cache
+D:\dev\Jarvis-Exchange-Agent\SimpleHttpServer\obj\Debug\SimpleHttpServer.csproj.CopyComplete
+D:\dev\Jarvis-Exchange-Agent\SimpleHttpServer\obj\Debug\SimpleHttpServer.dll
+D:\dev\Jarvis-Exchange-Agent\SimpleHttpServer\obj\Debug\SimpleHttpServer.pdb
