@@ -38,11 +38,12 @@ namespace JarvisExchangeAgent
             serviceCrestron.Credentials = new WebCredentials("ic.crestron.ic@canada.ca", "2D5n%L+sg4$t!m@Y9R6T3p%F8Q!N4r");
 
             ServicePointManager.ServerCertificateValidationCallback = CertificateValidationCallBack;
-            service10.AutodiscoverUrl("Ic.Jarvis10.ic@canada.ca", RedirectionUrlValidationCallback);
-            service268.AutodiscoverUrl("Ic.Jarvis268.ic@canada.ca", RedirectionUrlValidationCallback);
-            service37.AutodiscoverUrl("Ic.Jarvis37.ic@canada.ca", RedirectionUrlValidationCallback);
-            service459.AutodiscoverUrl("Ic.Jarvis459.ic@canada.ca", RedirectionUrlValidationCallback);
-            service459.AutodiscoverUrl("ic.crestron.ic@canada.ca", RedirectionUrlValidationCallback);
+            service10.Url = new Uri("https://email-courriel.canada.ca/EWS/Exchange.asmx");
+            service268.Url = new Uri("https://email-courriel.canada.ca/EWS/Exchange.asmx");
+            service37.Url = new Uri("https://email-courriel.canada.ca/EWS/Exchange.asmx");
+            service459.Url = new Uri("https://email-courriel.canada.ca/EWS/Exchange.asmx");
+            serviceCrestron.Url = new Uri("https://email-courriel.canada.ca/EWS/Exchange.asmx");
+            
             Console.WriteLine("url: " + service10.Url);
         }
 
